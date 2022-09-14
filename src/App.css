@@ -1,38 +1,324 @@
+:root {
+  --color-primary-400: #660000;
+  --color-primary-500: #990000;
+  --color-primary-600: #cc0000;
+  --color-primary-900: #ffdddd;
+  --color-white: #ffffff;
+  --color-black: #000000;
+}
+
 .App {
   text-align: center;
+  padding-bottom: 1.5rem;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.player {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
   align-items: center;
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+.player > * {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+  /* margin-bottom: 1.5rem; */
+}
+label {
+  color: var(--color-primary-400);
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+
+.tab-list {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  list-style: none;
+  padding: 0;
 }
 
-.App-link {
-  color: #61dafb;
+.tab-list > button {
+  background: var(--color-primary-900);
+  color: var(--color-primary-400);
+  border: 0;
+  width: 50%;
+  padding-block: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.tab-list > button:hover {
+  background: var(--color-primary-600);
+  color: var(--color-primary-900);
+  cursor: pointer;
+}
+
+.tab-list > button.active {
+  background: var(--color-primary-400);
+  color: var(--color-primary-900);
+}
+
+.tab-list > button.active:hover {
+  cursor: default;
+}
+
+.player-name {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: clamp(1.6rem, 2vw, 3rem);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.player-score {
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.player-score .em {
+  font-weight: 600;
+}
+
+.player-meld {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+.player-meld .em {
+  font-weight: 600;
+}
+
+
+
+header {
+  background: var(--color-primary-900);
+  border-bottom: 2px solid var(--color-primary-400);
+  color: var(--color-primary-400);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-end;
+  overflow-y: hidden;
+  transform: 500ms ease-in-out;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.gameName {
+  text-transform: capitalize;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.game-settings {
+  transform: scaleY(0);
+  transform-origin: top;
+  /* opacity: 0; */
+  max-height: 0;
+  transition: transform 250ms ease-in, max-height 250ms ease-in;
+  display: flex;
+  justify-content:center;
+  flex-wrap: wrap;
+  gap: 2em;
+  width: 100%;
+}
+
+.game-settings.open {
+  transform: scaleY(1);
+  /* opacity: 1; */
+  max-height: 100vh;
+}
+
+.game-settings > .game-settings__block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: middle; */
+  min-width: 200px;
+}
+
+.game-settings__block div {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.name-editor {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-self: center;
+}
+input,
+select,
+.btn {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  border: 1px solid var(--color-primary-400);
+  border-radius: 0.2rem;
+  background: var(--color-white);
+  color: var(--color-primary-400);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  /* width: 100%; Full-width */
+  /* height: 50%; */
+  height: 0.9rem;
+  background: var(--color-white); /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  padding: 0px;
+}
+
+/* Mouse-over effects */
+input[type="range"]:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: var(--color-primary-400); /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 0.5rem;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: var(--color-primary-400); /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.btn:hover {
+  background: var(--color-primary-900);
+  color: var(--color-primary-400);
+  cursor: pointer;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+  height: 30px;
+  align-items: center;
+  justify-content: space-around;
+  background: none;
+  border: solid 1px transparent;
+  border-radius: 2px;
+}
+
+.hamburger:hover,
+.hamburger:focus,
+.hamburger.open {
+  cursor: pointer;
+  border: solid 1px var(--color-primary-500);
+}
+
+.hamburger .hamburger__line {
+  border-radius: 2.5px;
+  width: 100%;
+  height: 5px;
+  background: var(--color-primary-400);
+}
+
+.hamburger:hover .hamburger__line {
+  background: var(--color-primary-500);
+}
+
+.hamburger .icon {
+  stroke-width: 2px;
+  stroke: var(--color-primary-400);
+}
+
+.hamburger:hover .icon {
+  stroke: var(--color-primary-500);
+}
+
+.toggleOuter {
+  display: block;
+  border: solid 1px var(--color-primary-400);
+  height: 2rem;
+  border-radius: 0.2rem;
+  background: var(--color-white);
+  padding: 0.2rem;
+  position: relative;
+  box-sizing: content-box;
+}
+
+.toggleInner {
+  color: var(--color-primary-900);
+  display: block;
+  border: solid 1px currentColor;
+  background: currentColor;
+  height: 75%;
+  border-radius: 0.2rem;
+  width: 50%;
+  position: absolute;
+  left: 0.2rem;
+  transition: color 150ms ease-out, left 150ms ease-out;
+}
+
+.toggleOuter.checked .toggleInner {
+  color: var(--color-primary-400);
+  left: 48%;
+}
+
+.subtotal, .player__subtotal {
+  font-size: 1.6rem;
+  color: var(--color-primary-400);
+  margin: 0.5rem 0 0 0;
+  padding: 0;
+}
+
+.player__subtotal {
+  margin: 0 0 1.5rem 0;
+}
+
+@media (max-width: 600px) {
+
+  .name-editor, .name-editor input {
+    margin-bottom: 0.5rem;
+    max-width: 80%;
   }
-  to {
-    transform: rotate(360deg);
+}
+@media (min-width: 600px) {
+  .player {
+    flex-direction: row;
+  }
+
+  .player > * {
+    width: 48%;
+  }
+
+  .subtotal {
+    display: none;
   }
 }
