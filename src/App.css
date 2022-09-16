@@ -81,6 +81,7 @@ label {
   font-size: clamp(1.6rem, 2vw, 3rem);
   font-weight: 600;
   margin-bottom: 0.5rem;
+  max-width: 100%;
 }
 
 .player-score {

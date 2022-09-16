@@ -3,16 +3,17 @@ import Player from "./Player";
 
 export function Tabs({ players, children, game, ...props }) {
   const [activeTab, setActiveTab] = useState(0);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(null);
 
   const handleNameChange = (e, index) => {
     const [player, setPlayer] = players[index];
     setPlayer({ ...player, name: e.target.value });
+    console.log(players)
   };
 
   const handleKeypress = (e) => {
     if (e.key === "Enter") {
-      setEditing(false);
+      setEditing(null);
     }
   };
 
@@ -39,19 +40,19 @@ export function Tabs({ players, children, game, ...props }) {
             onClick={() => setActiveTab(index)}
           >
             <div className="player-name">
-              {editing ? (
+              {editing === player[0].id ? (
                 <div className="name-editor">
                   <input
                     type="text"
                     onChange={(e) => handleNameChange(e, index)}
-                    onBlur={() => setEditing(false)}
+                    onBlur={() => setEditing(null)}
                     onKeyDown={handleKeypress}
                     value={player[0].name}
                   />
-                  <button className="btn" onClick={() => setEditing(false)}>Save</button>
+                  <div className="btn" onClick={() => setEditing(null)}>Save</div>
                 </div>
               ) : (
-                <div onClick={() => setEditing(!editing)}>{player[0].name}</div>
+                <div onClick={() => setEditing(player[0].id)}>{player[0].name}</div>
               )}
             </div>
             <div className="player-score">

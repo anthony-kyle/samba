@@ -9,13 +9,17 @@ export const GameSettings = ({
   handlePlayerCountChange,
 }) => {
   const [visible, setVisible] = useState(false);
+
+  const handleMenuOpen = () => {
+    setVisible(!visible);
+  }
   return (
     <header>
       <div className="topBar">
         <div className="gameName">{game} scorecard</div>
         <HamburgerButton
           open={visible}
-          onClick={() => setVisible(!visible)}
+          onClick={handleMenuOpen}
           aria-label="Open Settings"
         />
       </div>

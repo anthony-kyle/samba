@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { SlideToggle } from './SlideToggle';
+import { useEffect, useState } from "react";
+import { SlideToggle } from "./SlideToggle";
 
 export default function Player({ player: initialPlayer, game, ...props }) {
   const [player, setPlayer] = initialPlayer;
@@ -18,23 +18,12 @@ export default function Player({ player: initialPlayer, game, ...props }) {
     bonus: { value: 0, score: 0, multiplier: 1 },
   });
 
-  const calculateSubtotal = useCallback(
-    (scoreValues) => {
-      let newSubtotal = scoreValues?.reduce(
-        (total, score) => total + score.score,
-        0
-      );
-      setSubtotal(newSubtotal);
-      return subtotal
-    },
-    [subtotal, setSubtotal]
-  );
-
   const resetForm = () => {
     for (const score in scores) {
       scores[score].value = 0;
       scores[score].score = 0;
     }
+    setSubtotal(0)
   };
 
   const handleSave = (e) => {
@@ -42,25 +31,34 @@ export default function Player({ player: initialPlayer, game, ...props }) {
     const newPlayer = {
       ...player,
     };
-    newPlayer.score += subtotal;
-    setPlayer(newPlayer);
-    resetForm();
+
+    console.log(player, newPlayer, subtotal);
+    if (newPlayer.score >= 0 && subtotal >= 0) {
+      newPlayer.score += subtotal;
+      console.log(player, newPlayer, subtotal);
+      setPlayer(newPlayer);
+      resetForm();
+    }
   };
 
   const handleScoreChange = (e, key) => {
-    let value = parseInt(e.target.value);
     const newScore = { ...scores };
     let multiplier = newScore[key].multiplier;
+    let value = 0;
+    if (key !== "win") {
+      value = parseInt(e.target.value);
+    }
 
-    switch(key) {
-      case 'win':
+    switch (key) {
+      case "win":
         value = newScore[key].value === 0 ? 1 : 0;
-        break
-      case 'redThrees':
-        multiplier = ((game === "canasta" && value === 4) || value === 6) ? 200 : 100;
-        break
+        break;
+      case "redThrees":
+        multiplier =
+          (game === "canasta" && value === 4) || value === 6 ? 200 : 100;
+        break;
       default:
-        break
+        break;
     }
 
     newScore[key].value = value;
@@ -69,29 +67,21 @@ export default function Player({ player: initialPlayer, game, ...props }) {
     setScores(newScore);
   };
 
+  const handleFocus = (e) => {
+    e.target.select();
+  };
+
   useEffect(() => {
-    calculateSubtotal([
-      scores.win,
-      scores.redThrees,
-      scores.blackThrees,
-      scores.blackMelds,
-      scores.canastas,
-      scores.sambas,
-      scores.bolivias,
-      scores.pointsInHand,
-      scores.pointsOnTable,
-      scores.penalties,
-      scores.bonus,
-    ]);
-  }, [
-    calculateSubtotal,
-    scores
-  ]);
+    let newSubtotal = 0
+    for (const score in scores) {
+      newSubtotal += scores[score].score;
+    }
+    setSubtotal(newSubtotal);
+  }, [ scores]);
 
   const handleNull = (e) => {
     const value = e.target.value;
     if (typeof value !== "number" || value < 0) e.target.value = 0;
-    calculateSubtotal();
   };
 
   return (
@@ -100,25 +90,29 @@ export default function Player({ player: initialPlayer, game, ...props }) {
       <div className="player">
         <label className="win">
           Won?
-          <SlideToggle checked={scores.win.value === 1} onClick={(e) => handleScoreChange(e, 'win')} />
+          <SlideToggle
+            checked={scores.win.value === 1}
+            onClick={(e) => handleScoreChange(e, "win")}
+          />
         </label>
         <label>
           Red Threes
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "redThrees")}
             type="number"
             min="0"
             max={game === "canasta" ? 4 : 6}
             onChange={(e) => handleScoreChange(e, "redThrees")}
             value={scores.redThrees.value}
-            defaultValue={0}
           />
         </label>
         {game === "bolivia" ? (
           <label>
             Black Threes
             <input
-              onBlur={handleNull}
+              onFocus={handleFocus}
+              onBlur={(e) => handleScoreChange(e, "blackThrees")}
               type="number"
               min="0"
               max="6"
@@ -130,7 +124,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Black Melds
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "blackMelds")}
             type="number"
             min="0"
             onChange={(e) => handleScoreChange(e, "blackMelds")}
@@ -140,7 +135,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Canastas
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "canastas")}
             type="number"
             min="0"
             onChange={(e) => handleScoreChange(e, "canastas")}
@@ -151,7 +147,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
           <label>
             Sambas
             <input
-              onBlur={handleNull}
+              onFocus={handleFocus}
+              onBlur={(e) => handleScoreChange(e, "sambas")}
               type="number"
               min="0"
               onChange={(e) => handleScoreChange(e, "sambas")}
@@ -163,7 +160,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
           <label>
             Bolivias
             <input
-              onBlur={handleNull}
+              onFocus={handleFocus}
+              onBlur={(e) => handleScoreChange(e, "bolivias")}
               type="number"
               min="0"
               onChange={(e) => handleScoreChange(e, "bolivias")}
@@ -174,7 +172,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Points in Hand
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "pointsInHand")}
             type="number"
             min={0}
             onChange={(e) => handleScoreChange(e, "pointsInHand")}
@@ -185,7 +184,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Points on table
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "pointsOnTable")}
             type="number"
             min={0}
             onChange={(e) => handleScoreChange(e, "pointsOnTable")}
@@ -196,7 +196,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Bonus Points
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "bonus")}
             type="number"
             min={0}
             onChange={(e) => handleScoreChange(e, "bonus")}
@@ -207,7 +208,8 @@ export default function Player({ player: initialPlayer, game, ...props }) {
         <label>
           Penalties
           <input
-            onBlur={handleNull}
+            onFocus={handleFocus}
+            onBlur={(e) => handleScoreChange(e, "penalties")}
             type="number"
             min={0}
             onChange={(e) => handleScoreChange(e, "penalties")}

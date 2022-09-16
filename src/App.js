@@ -39,7 +39,7 @@ function App() {
     } else {
        setPlayers([player1, player2]);
     }
-  }, [numPlayers, setPlayers, player1, player2, player3]);
+  }, [numPlayers, setPlayers, player1[0], player2[0], player3[0]]);
 
   return (
     <div className="App">
