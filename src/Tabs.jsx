@@ -32,12 +32,13 @@ export function Tabs({ players, children, game, ...props }) {
   };
   return (
     <div className="tabs">
-      <div className="tab-list">
+      {/* <div className="tab-list"> */}
         {players.map((player, index) => (
-          <button
+          <div class="column">
+          <div
             key={`player_${index}_tab`}
             className={index === activeTab ? "active" : ""}
-            onClick={() => setActiveTab(index)}
+            // onClick={() => setActiveTab(index)}
           >
             <div className="player-name">
               {editing === player[0].id ? (
@@ -61,12 +62,13 @@ export function Tabs({ players, children, game, ...props }) {
             <div className="player-meld">
               Melding: <span className="em">{initialMeld(player[0])}</span>
             </div>
-          </button>
-        ))}
-      </div>
-      <div className="tab-content">
+          </div>
         <Player player={players[activeTab]} game={game} />
-      </div>
+        </div>
+        ))}
+      {/* </div>
+      <div className="tab-content"> */}
+      {/* </div>    </div> */}
     </div>
   );
 }

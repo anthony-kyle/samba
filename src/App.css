@@ -14,29 +14,41 @@
 
 .player {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
   align-items: center;
-  padding: 1.5rem;
-  gap: 1.5rem;
+  justify-content: center;
 }
 
-.player > * {
+.scorefield {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  width: 50%;
+  /* gap: 1.5rem; */
+}
+
+.scorefield__controls {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+/* .player > * {
   display: flex;
   flex-direction: column;
   width: 100%;
   text-align: left;
-  /* margin-bottom: 1.5rem; */
-}
+  margin-bottom: 1.5rem;
+} */
 label {
   color: var(--color-primary-400);
 }
 
 .tabs {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   margin: 0 auto;
 }
 
@@ -176,9 +188,23 @@ select,
   padding: 0.5rem;
   font-size: 1.2rem;
   border: 1px solid var(--color-primary-400);
-  border-radius: 0.2rem;
   background: var(--color-white);
   color: var(--color-primary-400);
+}
+.scorefield__score {
+  font-size: 1.2rem;
+  border: 1px solid var(--color-primary-400);
+  background: var(--color-white);
+  color: var(--color-primary-400);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.scorefield input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0px;
 }
 
 input[type="range"] {
@@ -301,6 +327,17 @@ input[type="range"]::-moz-range-thumb {
 
 .player__subtotal {
   margin: 0 0 1.5rem 0;
+}
+
+
+.scorefield__controls__button.btn {
+  width: 42px;
+  height: 42px;
+}
+
+.scorefield__score__label {
+  text-align: left;
+ font-size: 0.8rem;
 }
 
 @media (max-width: 600px) {
