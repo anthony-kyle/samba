@@ -1,229 +1,182 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button } from "./Button";
+import { Check, Cross } from "./Icons";
+import { NumberInput } from "./NumberInput";
 import { SlideToggle } from "./SlideToggle";
 
-export default function Player({ player: initialPlayer, game, ...props }) {
-  const [player, setPlayer] = initialPlayer;
-  const [subtotal, setSubtotal] = useState(0);
-  const [scores, setScores] = useState({
-    win: { value: 0, score: 0, multiplier: 100 },
-    redThrees: { value: 0, score: 0, multiplier: 100 },
-    blackThrees: { value: 0, score: 0, multiplier: -100 },
-    blackMelds: { value: 0, score: 0, multiplier: 300 },
-    canastas: { value: 0, score: 0, multiplier: 500 },
-    sambas: { value: 0, score: 0, multiplier: 1500 },
-    bolivias: { value: 0, score: 0, multiplier: 2500 },
-    pointsInHand: { value: 0, score: 0, multiplier: -1 },
-    pointsOnTable: { value: 0, score: 0, multiplier: 1 },
-    penalties: { value: 0, score: 0, multiplier: -1 },
-    bonus: { value: 0, score: 0, multiplier: 1 },
-  });
-
-  const resetForm = () => {
-    for (const score in scores) {
-      scores[score].value = 0;
-      scores[score].score = 0;
-    }
-    setSubtotal(0)
+export default function Player({
+  player,
+  handleScoreChange,
+  game,
+  active,
+  className = "",
+  setSubtotal,
+  ...props
+}) {
+  
+  const handleChange = (key, value) => {
+    handleScoreChange(player, key, value);
+    setSubtotal(player);
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    const newPlayer = {
-      ...player,
-    };
+  // const handleFocus = (e) => {
+  //   e.target.select();
+  // };
 
-    console.log(player, newPlayer, subtotal);
-    if (newPlayer.score >= 0 && subtotal >= 0) {
-      newPlayer.score += subtotal;
-      console.log(player, newPlayer, subtotal);
-      setPlayer(newPlayer);
-      resetForm();
-    }
-  };
+  // useEffect(() => {
+  //   let newSubtotal = 0;
+  //   for (const score in player.scoreSheet) {
+  //     newSubtotal += player.scoreSheet[score].score;
+  //   }
+  //   setSubtotal(newSubtotal);
+  // }, [scores]);
 
-  const handleScoreChange = (e, key) => {
-    const newScore = { ...scores };
-    let multiplier = newScore[key].multiplier;
-    let value = 0;
-    if (key !== "win") {
-      value = parseInt(e.target.value);
-    }
-
-    switch (key) {
-      case "win":
-        value = newScore[key].value === 0 ? 1 : 0;
-        break;
-      case "redThrees":
-        multiplier =
-          (game === "canasta" && value === 4) || value === 6 ? 200 : 100;
-        break;
-      default:
-        break;
-    }
-
-    newScore[key].value = value;
-    newScore[key].score = value * multiplier;
-
-    setScores(newScore);
-  };
-
-  const handleFocus = (e) => {
-    e.target.select();
-  };
-
-  useEffect(() => {
-    let newSubtotal = 0
-    for (const score in scores) {
-      newSubtotal += scores[score].score;
-    }
-    setSubtotal(newSubtotal);
-  }, [ scores]);
-
-  const handleNull = (e) => {
-    const value = e.target.value;
-    if (typeof value !== "number" || value < 0) e.target.value = 0;
-  };
+  // const handleNull = (e) => {
+  //   const value = e.target.value;
+  //   if (typeof value !== "number" || value < 0) e.target.value = 0;
+  // };
 
   return (
-    <>
-      <div className="subtotal">Hand total: {subtotal}</div>
+    <section className={`scorecard ${className}`}>
+      <div className="subtotal">Hand total: {player.subtotal}</div>
       <div className="player">
-        <label className="win">
-          Won?
-          <SlideToggle
-            checked={scores.win.value === 1}
-            onClick={(e) => handleScoreChange(e, "win")}
-          />
-        </label>
-        <label>
-          Red Threes
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "redThrees")}
-            type="number"
-            min="0"
+        <div className="player-row">
+          <div className="number-input">
+            <div className="number-input__fields">
+              <label className="number-input__fields--label">Win?</label>
+              <div className="number-input__fields--input" style={{textAlign: 'left'}}>
+                {player.scoreSheet.win.value === 1 ? "Yes" : "No"}
+              </div>
+            </div>
+            <div className="number-input__actions">
+              <Button
+                className="number-input__actions--increment"
+                onClick={() => handleChange("win", 1)}
+              >
+                <Check />
+              </Button>
+              <Button
+                className="number-input__actions--decrement"
+                onClick={() => handleChange("win", 0)}
+              >
+                <Cross />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="player-row">
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Red Threes"
+            scoreKey="redThrees"
+            value={player.scoreSheet.redThrees.value}
+            min={0}
             max={game === "canasta" ? 4 : 6}
-            onChange={(e) => handleScoreChange(e, "redThrees")}
-            value={scores.redThrees.value}
+            onChange={handleChange}
           />
-        </label>
-        {game === "bolivia" ? (
-          <label>
-            Black Threes
-            <input
-              onFocus={handleFocus}
-              onBlur={(e) => handleScoreChange(e, "blackThrees")}
-              type="number"
-              min="0"
-              max="6"
-              onChange={(e) => handleScoreChange(e, "blackThrees")}
-              value={scores.blackThrees.value}
+          {game === "bolivia" && (
+            <NumberInput
+              id={`player-${player.id}`}
+              label="Black Threes"
+              scoreKey="blackThrees"
+              value={player.scoreSheet.blackThrees.value}
+              min={0}
+              max={6}
+              onChange={handleChange}
             />
-          </label>
-        ) : null}
-        <label>
-          Black Melds
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "blackMelds")}
-            type="number"
-            min="0"
-            onChange={(e) => handleScoreChange(e, "blackMelds")}
-            value={scores.blackMelds.value}
+          )}
+        </div>
+        <div className="player-row">
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Black Melds"
+            scoreKey="blackMelds"
+            value={player.scoreSheet.blackMelds.value}
+            min={0}
+            max={0}
+            onChange={handleChange}
           />
-        </label>
-        <label>
-          Canastas
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "canastas")}
-            type="number"
-            min="0"
-            onChange={(e) => handleScoreChange(e, "canastas")}
-            value={scores.canastas.value}
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Canastas"
+            scoreKey="canastas"
+            value={player.scoreSheet.canastas.value}
+            min={0}
+            max={0}
+            onChange={handleChange}
           />
-        </label>
-        {game === "bolivia" || game === "samba" ? (
-          <label>
-            Sambas
-            <input
-              onFocus={handleFocus}
-              onBlur={(e) => handleScoreChange(e, "sambas")}
-              type="number"
-              min="0"
-              onChange={(e) => handleScoreChange(e, "sambas")}
-              value={scores.sambas.value}
+        </div>
+        {(game === "bolivia" || game === "samba") && (
+          <div className="player-row">
+            <NumberInput
+              id={`player-${player.id}`}
+              label="Sambas"
+              scoreKey="sambas"
+              value={player.scoreSheet.sambas.value}
+              min={0}
+              max={0}
+              onChange={handleChange}
             />
-          </label>
-        ) : null}
-        {game === "bolivia" ? (
-          <label>
-            Bolivias
-            <input
-              onFocus={handleFocus}
-              onBlur={(e) => handleScoreChange(e, "bolivias")}
-              type="number"
-              min="0"
-              onChange={(e) => handleScoreChange(e, "bolivias")}
-              value={scores.bolivias.value}
-            />
-          </label>
-        ) : null}
-        <label>
-          Points in Hand
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "pointsInHand")}
-            type="number"
+            {game === "bolivia" && (
+              <NumberInput
+                id={`player-${player.id}`}
+                label="Bolivias"
+                scoreKey="bolivias"
+                value={player.scoreSheet.bolivias.value}
+                min={0}
+                onChange={handleChange}
+              />
+            )}
+          </div>
+        )}
+        <div className="player-row">
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Points in Hand"
+            scoreKey="pointsInHand"
+            value={player.scoreSheet.pointsInHand.value}
             min={0}
-            onChange={(e) => handleScoreChange(e, "pointsInHand")}
-            value={scores.pointsInHand.value}
-            step="5"
+            max={0}
+            step={5}
+            onChange={handleChange}
           />
-        </label>
-        <label>
-          Points on table
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "pointsOnTable")}
-            type="number"
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Points on Table"
+            scoreKey="pointsOnTable"
+            value={player.scoreSheet.pointsOnTable.value}
             min={0}
-            onChange={(e) => handleScoreChange(e, "pointsOnTable")}
-            value={scores.pointsOnTable.value}
-            step="5"
+            max={0}
+            step={5}
+            onChange={handleChange}
           />
-        </label>
-        <label>
-          Bonus Points
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "bonus")}
-            type="number"
+        </div>
+        <div className="player-row">
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Bonus Points"
+            scoreKey="bonus"
+            value={player.scoreSheet.bonus.value}
             min={0}
-            onChange={(e) => handleScoreChange(e, "bonus")}
-            value={scores.bonus.value}
-            step="5"
+            max={0}
+            step={5}
+            onChange={handleChange}
           />
-        </label>
-        <label>
-          Penalties
-          <input
-            onFocus={handleFocus}
-            onBlur={(e) => handleScoreChange(e, "penalties")}
-            type="number"
+          <NumberInput
+            id={`player-${player.id}`}
+            label="Penalties"
+            scoreKey="penalties"
+            value={player.scoreSheet.penalties.value}
             min={0}
-            onChange={(e) => handleScoreChange(e, "penalties")}
-            value={scores.penalties.value}
-            step="5"
+            max={0}
+            step={5}
+            onChange={handleChange}
           />
-        </label>
+        </div>
       </div>
       <div className="player--footer">
-        <div className="player__subtotal">Hand total: {subtotal}</div>
-        <button type="button" className="btn" onClick={handleSave}>
-          Save Hand
-        </button>
+        <div className="player__subtotal">Hand total: {player.subtotal}</div>
       </div>
-    </>
+    </section>
   );
 }

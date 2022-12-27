@@ -1,3 +1,18 @@
+* { box-sizing: border-box; } /* Switch to border-box for box-sizing. */
+
+body {
+  margin: 0; /* Remove the tiny space around the edge of the page */
+}
+
+input, select, button {
+  padding: 0px;
+}
+
+img, video, canvas, audio, iframe, embed, object  { 
+  display: block; /* Switch display mode to block, since that's what we usually want for images. */
+  vertical-align: middle;  /* If you override, and make an image inline, it's likely you'll want middle vertical alignment. */
+}
+
 :root {
   --color-primary-400: #660000;
   --color-primary-500: #990000;
@@ -10,25 +25,19 @@
 .App {
   text-align: center;
   padding-bottom: 1.5rem;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .player {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  justify-content: space-around;
   align-items: center;
   padding: 1.5rem;
-  gap: 1.5rem;
 }
 
-.player > * {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  text-align: left;
-  /* margin-bottom: 1.5rem; */
-}
 label {
   color: var(--color-primary-400);
 }
@@ -74,6 +83,17 @@ label {
   cursor: default;
 }
 
+.tab-content {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
+
+.tab-content .scorecard {
+  width: 30%;
+}
+
 .player-name {
   display: flex;
   justify-content: center;
@@ -103,6 +123,69 @@ label {
   font-weight: 600;
 }
 
+.player-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 0;
+}
+
+.number-input {
+  display: flex;
+  border: solid 1px var(--color-primary-400);
+  flex-grow: 1;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.player-row + .player-row > .number-input {
+  border-top: 0px;
+}
+
+.number-input__fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.2rem;
+  width: 100%;
+}
+
+.number-input__fields--label {
+  text-align: left;
+  font-size: 0.7rem;
+}
+.number-input__fields--input {
+  border: none;
+  font-size: 2rem; 
+  width: 100%;
+}
+
+.number-input__actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.number-input__actions button {
+  background: var(--color-primary-900);
+  color: var(--color-primary-400);
+  border-left: solid 1px var(--color-primary-400);
+  border-top: 0px;
+  border-bottom: 0px;
+  border-right: 0px;
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.number-input__actions button + button {
+  border-top: solid 1px var(--color-primary-400);
+}
 
 
 header {
@@ -169,16 +252,6 @@ header {
   justify-content: center;
   flex-wrap: wrap;
   align-self: center;
-}
-input,
-select,
-.btn {
-  padding: 0.5rem;
-  font-size: 1.2rem;
-  border: 1px solid var(--color-primary-400);
-  border-radius: 0.2rem;
-  background: var(--color-white);
-  color: var(--color-primary-400);
 }
 
 input[type="range"] {
@@ -303,23 +376,56 @@ input[type="range"]::-moz-range-thumb {
   margin: 0 0 1.5rem 0;
 }
 
-@media (max-width: 600px) {
+footer {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-primary-400);
+}
 
+footer button {
+  width: 100%;
+  background: var(--color-primary-400);
+  border: none;
+  color: var(--color-white);
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
   .name-editor, .name-editor input {
     margin-bottom: 0.5rem;
     max-width: 80%;
   }
+
+  .tab-content .scorecard {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+  }
+  .tab-content .scorecard.active {
+    display: flex;
+    
+  }
+  
 }
 @media (min-width: 600px) {
-  .player {
+
+
+  .player-row {
     flex-direction: row;
   }
-
-  .player > * {
-    width: 48%;
+  
+  .number-input {
+    width: 50%;
   }
-
+  
+  .number-input + .number-input {
+    border-left: 0;
+  }
   .subtotal {
     display: none;
   }
 }
+
